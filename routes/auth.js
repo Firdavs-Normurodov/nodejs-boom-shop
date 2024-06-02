@@ -1,9 +1,14 @@
 import { Router } from "express";
 import User from "../models/User.js";
 import bcrytp from "bcrypt";
+import { generateJWToken } from "../services/token.js";
 const router = Router();
 //get
 router.get("/login", (req, res) => {
+  if (req.cookies.token) {
+    res.redirect("/");
+    return;
+  }
   res.render("login", {
     title: "Login | Firdavs",
     isLogin: true,
@@ -11,11 +16,19 @@ router.get("/login", (req, res) => {
   });
 });
 router.get("/register", (req, res) => {
+  if (req.cookies.token) {
+    res.redirect("/");
+    return;
+  }
   res.render("register", {
     title: "Register | Firdavs",
     isRegister: true,
     registerError: req.flash("registerError"),
   });
+});
+router.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/");
 });
 //post
 router.post("/login", async (req, res) => {
@@ -38,7 +51,9 @@ router.post("/login", async (req, res) => {
     res.redirect("/login");
     return;
   }
-  console.log(existUser);
+  const token = generateJWToken(existUser._id);
+  console.log(token);
+  res.cookie("token", token, { httpOnly: true, secure: true });
   res.redirect("/");
 });
 router.post("/register", async (req, res) => {
@@ -62,7 +77,9 @@ router.post("/register", async (req, res) => {
     password: hashedPassword,
   };
   const user = await User.create(userData);
-  // console.log(userData);
+  const token = generateJWToken(user._id);
+
+  res.cookie("token", token, { httpOnly: true, secure: true });
   res.redirect("/");
 });
 

@@ -6,6 +6,8 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import flash from "connect-flash";
 import session from "express-session";
+import varMiddleware from "./middleware/var.js";
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
@@ -23,6 +25,8 @@ app.use(
   session({ secret: "Firdavs", resave: false, saveUninitialized: false })
 );
 app.use(flash());
+app.use(cookieParser());
+app.use(varMiddleware);
 
 app.use(AuthRoutes);
 app.use(ProductsRoutes);

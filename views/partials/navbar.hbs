@@ -29,6 +29,11 @@
         {{/if}}
         <div class="btn-group" role="group"
           aria-label="Basic mixed styles example">
+          {{#if token}}
+          <button type="submit" class="btn btn-danger active">
+            <a class="text-decoration-none text-light" href="/logout">Logout</a>
+          </button>
+          {{else}}
           {{#if isLogin}}
           <button type="submit" class="btn btn-primary active">
             <a class="text-decoration-none text-light" href="/login">Login</a>
@@ -49,7 +54,7 @@
               href="/register">Register</a>
           </button>
           {{/if}}
-
+          {{/if}}
         </div>
 
       </nav>
